@@ -4,6 +4,7 @@ local require = require
 -- local function
 local ngx            = ngx
 local ngx_hmac_sha1  = ngx.hmac_sha1
+local ngx_time       = ngx.time
 local bit_band       = bit.band
 local bit_lshift     = bit.lshift
 local bit_rshift     = bit.rshift
@@ -160,7 +161,7 @@ end
 
 
 function TOTP_MT:verify_token(token)
-    return (token == self:calc_token())
+    return (token == self:calc_token(ngx_time()))
 end
 
 
