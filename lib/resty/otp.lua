@@ -15,7 +15,7 @@ local string_format  = string.format
 local string_reverse = string.reverse
 local table_concat   = table.concat
 local table_insert   = table.insert
-local table_unpack   = table.unpack
+local table_unpack   = table.unpack or unpack  -- 5.1 compatibility
 
 
 local BASE32_HASH = {
