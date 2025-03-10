@@ -115,7 +115,6 @@ end
 
 local function totp_new_key()
     local tmp_k = ""
-    math.randomseed(ngx.time())
     for i = 1, 10 do
         tmp_k = tmp_k .. string_char(math_random(0, 255))
     end
