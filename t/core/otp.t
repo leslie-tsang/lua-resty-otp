@@ -47,3 +47,24 @@ GET /t
 458138
 --- no_error_log
 [error]
+
+
+=== TEST 3: Fixed random seed
+--- config
+location = /t {
+    content_by_lua_block {
+        -- load common libs
+        local resty_otp = require("resty.otp")
+        resty_otp.randomseed(42)
+
+        local TOTP = resty_otp.totp_init()
+        -- UTC - 20200101 00:00:00
+        ngx.print(TOTP:calc_token(946656000))
+    }
+}
+--- request
+GET /t
+--- response_body chomp
+171492
+--- no_error_log
+[error]
