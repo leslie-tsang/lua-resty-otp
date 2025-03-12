@@ -2,20 +2,22 @@
 local require = require
 
 -- local function
-local ngx            = ngx
-local ngx_hmac_sha1  = ngx.hmac_sha1
-local ngx_time       = ngx.time
-local bit_band       = bit.band
-local bit_lshift     = bit.lshift
-local bit_rshift     = bit.rshift
-local math_floor     = math.floor
-local math_random    = math.random
-local string_char    = string.char
-local string_format  = string.format
-local string_reverse = string.reverse
-local table_concat   = table.concat
-local table_insert   = table.insert
-local table_unpack   = table.unpack or unpack  -- 5.1 compatibility
+local ngx             = ngx
+local ngx_worker_pid  = ngx.worker.pid
+local ngx_hmac_sha1   = ngx.hmac_sha1
+local ngx_time        = ngx.time
+local bit_band        = bit.band
+local bit_lshift      = bit.lshift
+local bit_rshift      = bit.rshift
+local math_floor      = math.floor
+local math_randomseed = math.randomseed
+local math_random     = math.random
+local string_char     = string.char
+local string_format   = string.format
+local string_reverse  = string.reverse
+local table_concat    = table.concat
+local table_insert    = table.insert
+local table_unpack    = table.unpack or unpack  -- 5.1 compatibility
 
 
 local BASE32_HASH = {
@@ -115,7 +117,6 @@ end
 
 local function totp_new_key()
     local tmp_k = ""
-    math.randomseed(ngx.time())
     for i = 1, 10 do
         tmp_k = tmp_k .. string_char(math_random(0, 255))
     end
@@ -125,6 +126,13 @@ end
 
 ------ TOTP functions ------
 local TOTP_MT = {}
+
+
+function _M.randomseed(seed)
+    local x = tonumber(seed) or ngx_time() + ngx_worker_pid()
+    math_randomseed(x)
+    return x
+end
 
 
 function _M.totp_init(secret_key)
